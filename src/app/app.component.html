@@ -1,0 +1,103 @@
+<br />
+<div style="text-align: center; font-size: 1.2em">iMessage Stats</div>
+<br />
+
+<div style="text-align: center; font-size: 0.8em; color: cornflowerblue">Upload Messages</div>
+<div style="position: relative; margin: auto; text-align: center; width: 80px; height: 80px;">
+  <img style="margin: auto; width: 80px; height: 80px; float: center;" src="assets/upload.png" />
+  <input style="position: absolute; height: 80px; width: 80px; top: 0; left: 0; opacity: 0;" id="fileInput" type="file" class="file_input" multiple (change)="clickedOK()"/>
+</div>
+<br />
+
+<div *ngIf="isLoading" style="text-align: center;">
+    <img style="margin: auto; float: center;" src="assets/loading.gif" />
+    <!-- <div *ngIf="showEmojiCount">
+        <span style="color: cornflowerblue;">{{this.checkingMessageNumber | number}}</span> out of {{this.messages.length | number}}
+    </div> -->
+</div>
+
+<div *ngIf="!isLoading && !isBlank">
+  <div style="text-align: center;"><span style="color: cornflowerblue; font-size: 1.6em;">{{this.messages.length | number}}</span> Messages</div>
+  <br />
+  <div style="text-align: left; padding-left: 40px;"><span style="color: cornflowerblue;">Word</span> Count</div>
+  <div class="h-scroll">
+    <div *ngFor="let word of wordArray, let i = index" class="totals">
+      <div style="margin: 20px;" *ngIf="i < showNumberOfWords-1">
+        <span style="text-transform: capitalize; font-size: 1.6em">{{word.word}}</span>
+        <br/>
+        <span style="color: cornflowerblue;">{{word.count | number}}</span>
+        <br/>
+        <span style="color: grey; font-size: 0.9em;">#{{i+1}}</span>
+      </div>
+    </div>
+  </div>
+
+  <br />
+  <br />
+
+  <div style="text-align: left; padding-left: 40px;"><span style="color: cornflowerblue;">Emoji</span> Count<span *ngIf="!showEmojiCount">  -  <span style="color: cornflowerblue;" tappable (click)="clickedEmojiStats()"><u>Get Emoji Stats ></u></span></span></div>
+  <div class="h-scroll" *ngIf="showEmojiCount">
+    <div *ngFor="let emoji of emojiArray, let i = index" class="totals">
+      <div style="margin: 20px;">
+        <span style="text-transform: capitalize; font-size: 1.6em">{{emoji.emoji}}</span>
+        <br/>
+        <span style="color: cornflowerblue;">{{emoji.count | number}}</span>
+        <br/>
+        <span style="color: grey; font-size: 0.9em;">#{{i+1}}</span>
+      </div>
+    </div>
+  </div>
+
+  <br />
+  <br />
+
+  <div style="display: inline-block; width: 45%;">
+    <div style="text-align: center">Monthly</div>
+    <canvas baseChart
+            [datasets]="monthlyChartData"
+            [labels]="monthlyChartLabels"
+            [options]="monthlyChartOptions"
+            [legend]="monthlyChartLegend"
+            [chartType]="monthlyChartType"
+            [colors]="chartColors"
+            (chartHover)="monthlyChartHovered($event)"
+            (chartClick)="monthlyChartClicked($event)"></canvas>
+  </div>
+
+  <div style="display: block; width: 45%; float: right;" *ngIf="showDaily">
+    <div style="text-align: center">Daily</div>
+    <canvas baseChart
+            [datasets]="dailyChartData"
+            [labels]="dailyChartLabels"
+            [options]="dailyChartOptions"
+            [legend]="dailyChartLegend"
+            [chartType]="dailyChartType"
+            [colors]="chartColors"
+            (chartHover)="dailyChartHovered($event)"
+            (chartClick)="dailyChartClicked($event)"></canvas>
+  </div>
+
+  <section class="discussion" *ngIf="selectedDayMessages.length > 0">
+
+    <div style="text-align: center; font-size: 1.4em; font-weight: bold;">{{selectedDay}}</div>
+    <br />
+    <br />
+    <div *ngFor="let message of selectedDayMessages">
+      <div class="bubble"
+      [class.left]="message.Received == 'Yes'"
+      [class.right]="message.Received != 'Yes'">
+          {{message.Text}}
+      </div>
+      <div class="date"
+      [class.left]="message.Received == 'Yes'"
+      [class.right]="message.Received != 'Yes'" *ngIf="message.Text">
+        {{message.Date | date: "h:mma" | lowercase}}
+      </div>
+    </div>
+  </section>
+
+</div>
+
+
+
+
